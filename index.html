@@ -2,7 +2,8 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0f" />
   <title>Ekran Tester | Pixel Checker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
@@ -15,36 +16,44 @@
       --dim: #475569;
       --card: #111827;
       --border: #1e293b;
-      --cell-size: min(9vw, 48px);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
 
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Rajdhani', sans-serif;
-      min-height: 100dvh;
+      height: 100dvh;
+      width: 100vw;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overscroll-behavior: none;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
 
     /* ── HEADER ── */
     header {
-      padding: 14px 16px 10px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(10,10,15,.9);
+      background: rgba(10,10,15,.95);
       backdrop-filter: blur(8px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      flex-shrink: 0;
     }
     header h1 {
-      font-size: 1.35rem;
+      font-size: 1.15rem;
       font-weight: 700;
       letter-spacing: .06em;
       background: linear-gradient(120deg, var(--accent2), var(--accent));
@@ -52,40 +61,59 @@
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
     }
+    .header-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
     #score-badge {
       font-family: 'Space Mono', monospace;
-      font-size: .75rem;
+      font-size: .7rem;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 99px;
-      padding: 4px 12px;
+      padding: 4px 10px;
       color: var(--accent2);
-      transition: color .3s;
+    }
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--accent2);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* ── CONTROLS ── */
     .controls {
       display: flex;
-      gap: 8px;
-      padding: 10px 14px;
+      gap: 6px;
+      padding: 8px 12px;
       overflow-x: auto;
       scrollbar-width: none;
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
     .controls::-webkit-scrollbar { display: none; }
     .ctrl-btn {
       flex-shrink: 0;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 8px;
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--text);
       font-family: 'Rajdhani', sans-serif;
-      font-size: .9rem;
+      font-size: .85rem;
       font-weight: 600;
       cursor: pointer;
       transition: background .2s, border-color .2s, transform .1s;
       letter-spacing: .03em;
+      white-space: nowrap;
     }
     .ctrl-btn:active { transform: scale(.95); }
     .ctrl-btn.active {
@@ -100,36 +128,28 @@
 
     /* ── INFO BAR ── */
     .info-bar {
-      padding: 8px 14px;
+      padding: 6px 12px;
       font-family: 'Space Mono', monospace;
-      font-size: .65rem;
+      font-size: .62rem;
       color: var(--dim);
       display: flex;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
     .info-bar span { color: var(--accent2); }
 
     /* ── MAIN GRID ── */
     main {
       flex: 1;
-      padding: 12px;
+      min-height: 0;
+      padding: 6px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 6px;
+      overflow: hidden;
     }
-
-    /* ── MODE LABEL ── */
-    .mode-label {
-      text-align: center;
-      font-size: .8rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--dim);
-      font-family: 'Space Mono', monospace;
-    }
-    .mode-label b { color: var(--accent2); }
 
     /* ── PIXEL GRID ── */
     #pixel-grid {
@@ -137,15 +157,18 @@
       gap: 3px;
       touch-action: none;
       user-select: none;
+      flex: 1;
+      width: 100%;
+      min-height: 0;
     }
 
     .cell {
-      width: var(--cell-size);
-      height: var(--cell-size);
-      border-radius: 6px;
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
       background: #111;
       cursor: pointer;
-      transition: background .15s, transform .1s, box-shadow .15s;
+      transition: background .12s, transform .08s, box-shadow .12s;
       border: 1px solid #1a1a2e;
       position: relative;
       overflow: hidden;
@@ -154,28 +177,29 @@
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 5px;
+      border-radius: 4px;
       background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 60%);
       pointer-events: none;
     }
     .cell.on {
       background: var(--accent);
       border-color: var(--accent2);
-      box-shadow: 0 0 10px rgba(37,99,235,.5);
+      box-shadow: 0 0 8px rgba(37,99,235,.5);
       transform: scale(.93);
     }
-    .cell.on.color-red    { background: #ef4444; border-color: #fca5a5; box-shadow: 0 0 10px rgba(239,68,68,.5); }
-    .cell.on.color-green  { background: #22c55e; border-color: #86efac; box-shadow: 0 0 10px rgba(34,197,94,.5); }
-    .cell.on.color-yellow { background: #eab308; border-color: #fde047; box-shadow: 0 0 10px rgba(234,179,8,.5); }
-    .cell.on.color-white  { background: #f8fafc; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,.4); }
+    .cell.on.color-red    { background: #ef4444; border-color: #fca5a5; box-shadow: 0 0 8px rgba(239,68,68,.5); }
+    .cell.on.color-green  { background: #22c55e; border-color: #86efac; box-shadow: 0 0 8px rgba(34,197,94,.5); }
+    .cell.on.color-yellow { background: #eab308; border-color: #fde047; box-shadow: 0 0 8px rgba(234,179,8,.5); }
+    .cell.on.color-white  { background: #f8fafc; border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,.4); }
 
     /* ── PROGRESS BAR ── */
     .progress-wrap {
       background: var(--card);
       border-radius: 99px;
-      height: 6px;
+      height: 5px;
       overflow: hidden;
       border: 1px solid var(--border);
+      flex-shrink: 0;
     }
     #progress-bar {
       height: 100%;
@@ -185,25 +209,61 @@
       transition: width .3s;
     }
 
-    /* ── RESULT ── */
+    /* ── RESULT TOAST ── */
     #result {
       display: none;
-      text-align: center;
-      padding: 16px;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
       background: var(--card);
       border-radius: 12px;
       border: 1px solid var(--border);
+      z-index: 150;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
     }
     #result.show { display: block; animation: fadeUp .4s ease; }
-    #result h2 { font-size: 1.4rem; margin-bottom: 6px; }
-    #result p  { font-size: .9rem; color: var(--dim); font-family: 'Space Mono', monospace; }
+    #result h2 { font-size: 1.1rem; margin-bottom: 4px; }
+    #result p  { font-size: .75rem; color: var(--dim); font-family: 'Space Mono', monospace; }
     #result.good h2 { color: #22c55e; }
     #result.bad  h2 { color: #ef4444; }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translate(-50%, 12px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
     }
+
+    /* ── FULLSCREEN MODE ── */
+    body.fullscreen header,
+    body.fullscreen .controls,
+    body.fullscreen .info-bar,
+    body.fullscreen .progress-wrap {
+      display: none;
+    }
+    body.fullscreen main { padding: 0; gap: 0; }
+    body.fullscreen #pixel-grid { gap: 1px; }
+    body.fullscreen .cell { border-radius: 0; }
+    #fullscreen-exit {
+      display: none;
+      position: fixed;
+      top: env(safe-area-inset-top, 0);
+      right: env(safe-area-inset-right, 0);
+      margin: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.5);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.2);
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 250;
+      align-items: center;
+      justify-content: center;
+    }
+    body.fullscreen #fullscreen-exit { display: flex; }
 
     /* ── SOLID COLOR TEST ── */
     #solid-test {
@@ -229,14 +289,64 @@
       font-family: 'Space Mono', monospace;
     }
 
-    /* ── FOOTER ── */
-    footer {
-      padding: 10px 16px;
-      border-top: 1px solid var(--border);
+    /* ── TABLET / DESKTOP BLOCK ── */
+    #tablet-block {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
       text-align: center;
-      font-size: .7rem;
-      color: var(--dim);
+      gap: 16px;
+    }
+    #tablet-block.show { display: flex; }
+    #tablet-block .icon { font-size: 4rem; }
+    #tablet-block h2 {
+      font-size: 1.4rem;
+      background: linear-gradient(120deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    #tablet-block p {
       font-family: 'Space Mono', monospace;
+      font-size: .85rem;
+      color: var(--dim);
+      max-width: 340px;
+      line-height: 1.6;
+    }
+    #tablet-block .device-info {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      color: var(--accent2);
+      padding: 6px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+    }
+
+    /* ── RESPONSIVE TWEAKS ── */
+    /* Very small phones (≤360px) */
+    @media (max-width: 360px) {
+      header h1 { font-size: 1rem; }
+      #score-badge { font-size: .65rem; padding: 3px 8px; }
+      .ctrl-btn { padding: 5px 10px; font-size: .78rem; }
+      .info-bar { font-size: .58rem; gap: 8px; padding: 5px 10px; }
+      header { padding: 8px 10px; }
+    }
+    /* Landscape phones — compact header/controls */
+    @media (orientation: landscape) and (max-height: 480px) {
+      header { padding: 6px 12px; }
+      header h1 { font-size: 1rem; }
+      .controls { padding: 5px 10px; }
+      .ctrl-btn { padding: 5px 10px; font-size: .8rem; }
+      .info-bar { display: none; }
+      main { padding: 4px; gap: 4px; }
     }
   </style>
 </head>
@@ -244,7 +354,10 @@
 
 <header>
   <h1>📱 Ekran Tester</h1>
-  <div id="score-badge">0 / 0</div>
+  <div class="header-right">
+    <div id="score-badge">0 / 0</div>
+    <button class="icon-btn" onclick="toggleFullscreen()" title="To'liq ekran">⛶</button>
+  </div>
 </header>
 
 <div class="controls">
@@ -255,7 +368,7 @@
   <button class="ctrl-btn"        id="btn-white"  onclick="setColor('white')">⚪ Oq</button>
   <button class="ctrl-btn success"                onclick="toggleAllOn()">✅ Hammasini yoq</button>
   <button class="ctrl-btn danger"                 onclick="resetAll()">♻️ Tozala</button>
-  <button class="ctrl-btn"                        onclick="openSolid()">🖥️ To'liq ekran</button>
+  <button class="ctrl-btn"                        onclick="openSolid()">🖥️ Solid</button>
 </div>
 
 <div class="info-bar">
@@ -266,21 +379,29 @@
 </div>
 
 <main>
-  <div class="mode-label">Katak bosing — <b>rang o'zgaradi</b> • Suring — tez tekshirish</div>
   <div id="pixel-grid"></div>
   <div class="progress-wrap"><div id="progress-bar"></div></div>
-  <div id="result">
-    <h2 id="result-title"></h2>
-    <p  id="result-desc"></p>
-  </div>
 </main>
+
+<div id="result">
+  <h2 id="result-title"></h2>
+  <p  id="result-desc"></p>
+</div>
+
+<button id="fullscreen-exit" onclick="toggleFullscreen()">✕</button>
 
 <!-- SOLID COLOR FULLSCREEN -->
 <div id="solid-test">
   <div id="solid-hint">Bosing → rang almashtiradi | Ushlab turing → chiqish</div>
 </div>
 
-<footer>📲 Barcha telefonlarga moslashgan • Vercel ready</footer>
+<!-- TABLET / DESKTOP BLOCK -->
+<div id="tablet-block">
+  <div class="icon">📱</div>
+  <h2>Faqat telefon uchun</h2>
+  <p>Bu ilova faqat mobil telefonlar uchun mo'ljallangan. Iltimos, telefoningizdan kiring yoki brauzer derazasini kichraytiring.</p>
+  <div class="device-info" id="device-info">—</div>
+</div>
 
 <script>
   const COLORS = ['blue','red','green','yellow','white'];
@@ -299,27 +420,34 @@
   /* ─── BUILD GRID ─── */
   function buildGrid() {
     const grid = document.getElementById('pixel-grid');
-    const W = grid.clientWidth || window.innerWidth - 24;
-    const cellPx = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size')) || 42;
-    cols = Math.floor((W + 3) / (cellPx + 3));
-    cols = Math.max(6, Math.min(cols, 14));
+    // Use the actual rendered container size so cells stretch perfectly to fill it
+    const W = grid.clientWidth;
+    const H = grid.clientHeight;
+    if (W <= 0 || H <= 0) {
+      requestAnimationFrame(buildGrid);
+      return;
+    }
 
-    const viewH = window.innerHeight - 260;
-    rows = Math.floor((viewH + 3) / (cellPx + 3));
-    rows = Math.max(8, Math.min(rows, 28));
+    const isFs = document.body.classList.contains('fullscreen');
+    const targetCell = isFs ? 36 : 44;
+    const gap = isFs ? 1 : 3;
 
-    grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
+    cols = Math.max(6, Math.min(20, Math.round((W + gap) / (targetCell + gap))));
+    rows = Math.max(8, Math.min(40, Math.round((H + gap) / (targetCell + gap))));
+
+    // Use 1fr for both axes so cells fill the entire grid container
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.style.gridTemplateRows    = `repeat(${rows}, 1fr)`;
     grid.innerHTML = '';
     cells = [];
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const el = document.createElement('div');
-        el.className = 'cell';
-        el.dataset.idx = cells.length;
-        grid.appendChild(el);
-        cells.push({ el, on: false });
-      }
+    const total = cols * rows;
+    for (let i = 0; i < total; i++) {
+      const el = document.createElement('div');
+      el.className = 'cell';
+      el.dataset.idx = i;
+      grid.appendChild(el);
+      cells.push({ el, on: false });
     }
 
     document.getElementById('info-screen').textContent =
@@ -356,13 +484,11 @@
     document.getElementById('progress-bar').style.width = (on / cells.length * 100) + '%';
 
     const res = document.getElementById('result');
-    if (on === cells.length) {
+    if (on === cells.length && cells.length > 0) {
       res.className = 'show good';
       document.getElementById('result-title').textContent = '✅ Ekran mukammal!';
       document.getElementById('result-desc').textContent =
         `Barcha ${cells.length} ta piksel ishlaydi.`;
-    } else if (off === cells.length) {
-      res.className = '';
     } else {
       res.className = '';
     }
@@ -378,21 +504,21 @@
   function attachEvents() {
     const grid = document.getElementById('pixel-grid');
 
-    grid.addEventListener('pointerdown', e => {
+    grid.onpointerdown = e => {
       isPointerDown = true;
-      grid.setPointerCapture(e.pointerId);
+      try { grid.setPointerCapture(e.pointerId); } catch (_) {}
       const idx = cellFromPoint(e.clientX, e.clientY);
       if (idx !== null) toggleCell(idx);
-    });
+    };
 
-    grid.addEventListener('pointermove', e => {
+    grid.onpointermove = e => {
       if (!isPointerDown) return;
       const idx = cellFromPoint(e.clientX, e.clientY);
       if (idx !== null) forceOn(idx);
-    });
+    };
 
-    grid.addEventListener('pointerup',    () => { isPointerDown = false; });
-    grid.addEventListener('pointercancel',() => { isPointerDown = false; });
+    grid.onpointerup     = () => { isPointerDown = false; };
+    grid.onpointercancel = () => { isPointerDown = false; };
   }
 
   /* ─── COLOR BUTTONS ─── */
@@ -419,6 +545,22 @@
     updateScore();
   }
 
+  /* ─── FULLSCREEN MODE ─── */
+  function toggleFullscreen() {
+    document.body.classList.toggle('fullscreen');
+    // Try real browser fullscreen as well
+    if (document.body.classList.contains('fullscreen')) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } else {
+      if (document.exitFullscreen && document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    requestAnimationFrame(buildGrid);
+  }
+
   /* ─── SOLID FULLSCREEN ─── */
   function openSolid() {
     solidIdx = 0;
@@ -437,7 +579,6 @@
     document.getElementById('solid-test').classList.remove('show');
   });
 
-  // long press to exit solid
   document.getElementById('solid-test').addEventListener('pointerdown', () => {
     solidTimer = setTimeout(() => {
       document.getElementById('solid-test').classList.remove('show');
@@ -447,9 +588,56 @@
     clearTimeout(solidTimer);
   });
 
+  /* ─── DEVICE DETECTION (phone only) ─── */
+  function isPhone() {
+    const ua = navigator.userAgent || '';
+    const w  = window.innerWidth;
+    const h  = window.innerHeight;
+    const minSide = Math.min(w, h);
+    const maxSide = Math.max(w, h);
+
+    // Tablet markers in UA
+    const isTabletUA = /iPad|Tablet|PlayBook|Silk|Kindle/i.test(ua) ||
+                       (/Android/i.test(ua) && !/Mobile/i.test(ua));
+    if (isTabletUA) return false;
+
+    // Desktop (no touch + large screen)
+    const hasTouch = ('ontouchstart' in window) ||
+                     (navigator.maxTouchPoints > 0);
+    if (!hasTouch && minSide > 500) return false;
+
+    // Phone size threshold:
+    // Phones: shorter side ≤ 480px  AND  longer side ≤ 950px
+    if (minSide > 480) return false;
+    if (maxSide > 950) return false;
+
+    return true;
+  }
+
+  function checkDevice() {
+    const block = document.getElementById('tablet-block');
+    const info  = document.getElementById('device-info');
+    info.textContent = `${window.innerWidth}×${window.innerHeight}`;
+    if (isPhone()) {
+      block.classList.remove('show');
+      buildGrid();
+    } else {
+      block.classList.add('show');
+    }
+  }
+
   /* ─── INIT ─── */
-  buildGrid();
-  window.addEventListener('resize', buildGrid);
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(checkDevice, 120);
+  });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(checkDevice, 200);
+  });
+  window.addEventListener('load', checkDevice);
+  // first paint
+  requestAnimationFrame(checkDevice);
 </script>
 </body>
 </html>
