@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ekran Tester | Pixel Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --accent: #2563eb;
+      --accent2: #38bdf8;
+      --text: #e2e8f0;
+      --dim: #475569;
+      --card: #111827;
+      --border: #1e293b;
+      --cell-size: min(9vw, 48px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,15,.9);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      background: linear-gradient(120deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+    #score-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: .75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 12px;
+      color: var(--accent2);
+      transition: color .3s;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      gap: 8px;
+      padding: 10px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .controls::-webkit-scrollbar { display: none; }
+    .ctrl-btn {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, border-color .2s, transform .1s;
+      letter-spacing: .03em;
+    }
+    .ctrl-btn:active { transform: scale(.95); }
+    .ctrl-btn.active {
+      background: var(--accent);
+      border-color: var(--accent2);
+      color: #fff;
+    }
+    .ctrl-btn.danger { border-color: #ef4444; color: #ef4444; }
+    .ctrl-btn.danger:active { background: #ef4444; color: #fff; }
+    .ctrl-btn.success { border-color: #22c55e; color: #22c55e; }
+    .ctrl-btn.success:active { background: #22c55e; color: #fff; }
+
+    /* ── INFO BAR ── */
+    .info-bar {
+      padding: 8px 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: .65rem;
+      color: var(--dim);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-bar span { color: var(--accent2); }
+
+    /* ── MAIN GRID ── */
+    main {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── MODE LABEL ── */
+    .mode-label {
+      text-align: center;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      font-family: 'Space Mono', monospace;
+    }
+    .mode-label b { color: var(--accent2); }
+
+    /* ── PIXEL GRID ── */
+    #pixel-grid {
+      display: grid;
+      gap: 3px;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .cell {
+      width: var(--cell-size);
+      height: var(--cell-size);
+      border-radius: 6px;
+      background: #111;
+      cursor: pointer;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      border: 1px solid #1a1a2e;
+      position: relative;
+      overflow: hidden;
+    }
+    .cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 5px;
+      background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cell.on {
+      background: var(--accent);
+      border-color: var(--accent2);
+      box-shadow: 0 0 10px rgba(37,99,235,.5);
+      transform: scale(.93);
+    }
+    .cell.on.color-red    { background: #ef4444; border-color: #fca5a5; box-shadow: 0 0 10px rgba(239,68,68,.5); }
+    .cell.on.color-green  { background: #22c55e; border-color: #86efac; box-shadow: 0 0 10px rgba(34,197,94,.5); }
+    .cell.on.color-yellow { background: #eab308; border-color: #fde047; box-shadow: 0 0 10px rgba(234,179,8,.5); }
+    .cell.on.color-white  { background: #f8fafc; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,.4); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      background: var(--card);
+      border-radius: 99px;
+      height: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      transition: width .3s;
+    }
+
+    /* ── RESULT ── */
+    #result {
+      display: none;
+      text-align: center;
+      padding: 16px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    #result.show { display: block; animation: fadeUp .4s ease; }
+    #result h2 { font-size: 1.4rem; margin-bottom: 6px; }
+    #result p  { font-size: .9rem; color: var(--dim); font-family: 'Space Mono', monospace; }
+    #result.good h2 { color: #22c55e; }
+    #result.bad  h2 { color: #ef4444; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SOLID COLOR TEST ── */
+    #solid-test {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    #solid-test.show { display: flex; }
+    #solid-hint {
+      background: rgba(0,0,0,.5);
+      padding: 8px 20px;
+      border-radius: 99px;
+      font-size: .85rem;
+      letter-spacing: .06em;
+      color: #fff;
+      pointer-events: none;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: .7rem;
+      color: var(--dim);
+      font-family: 'Space Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📱 Ekran Tester</h1>
+  <div id="score-badge">0 / 0</div>
+</header>
+
+<div class="controls">
+  <button class="ctrl-btn active" id="btn-blue"   onclick="setColor('blue')">🔵 Ko'k</button>
+  <button class="ctrl-btn"        id="btn-red"    onclick="setColor('red')">🔴 Qizil</button>
+  <button class="ctrl-btn"        id="btn-green"  onclick="setColor('green')">🟢 Yashil</button>
+  <button class="ctrl-btn"        id="btn-yellow" onclick="setColor('yellow')">🟡 Sariq</button>
+  <button class="ctrl-btn"        id="btn-white"  onclick="setColor('white')">⚪ Oq</button>
+  <button class="ctrl-btn success"                onclick="toggleAllOn()">✅ Hammasini yoq</button>
+  <button class="ctrl-btn danger"                 onclick="resetAll()">♻️ Tozala</button>
+  <button class="ctrl-btn"                        onclick="openSolid()">🖥️ To'liq ekran</button>
+</div>
+
+<div class="info-bar">
+  <div>Ekran: <span id="info-screen">—</span></div>
+  <div>Grid: <span id="info-grid">—</span></div>
+  <div>Yoniq: <span id="info-on">0</span></div>
+  <div>O'chiq: <span id="info-off">0</span></div>
+</div>
+
+<main>
+  <div class="mode-label">Katak bosing — <b>rang o'zgaradi</b> • Suring — tez tekshirish</div>
+  <div id="pixel-grid"></div>
+  <div class="progress-wrap"><div id="progress-bar"></div></div>
+  <div id="result">
+    <h2 id="result-title"></h2>
+    <p  id="result-desc"></p>
+  </div>
+</main>
+
+<!-- SOLID COLOR FULLSCREEN -->
+<div id="solid-test">
+  <div id="solid-hint">Bosing → rang almashtiradi | Ushlab turing → chiqish</div>
+</div>
+
+<footer>📲 Barcha telefonlarga moslashgan • Vercel ready</footer>
+
+<script>
+  const COLORS = ['blue','red','green','yellow','white'];
+  const SOLID_COLORS = [
+    '#000000','#ffffff','#ef4444','#22c55e','#2563eb',
+    '#eab308','#a855f7','#ec4899','#f97316','#0ea5e9'
+  ];
+
+  let currentColor = 'blue';
+  let cells = [];
+  let cols = 0, rows = 0;
+  let solidIdx = 0;
+  let solidTimer = null;
+  let isPointerDown = false;
+
+  /* ─── BUILD GRID ─── */
+  function buildGrid() {
+    const grid = document.getElementById('pixel-grid');
+    const W = grid.clientWidth || window.innerWidth - 24;
+    const cellPx = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size')) || 42;
+    cols = Math.floor((W + 3) / (cellPx + 3));
+    cols = Math.max(6, Math.min(cols, 14));
+
+    const viewH = window.innerHeight - 260;
+    rows = Math.floor((viewH + 3) / (cellPx + 3));
+    rows = Math.max(8, Math.min(rows, 28));
+
+    grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
+    grid.innerHTML = '';
+    cells = [];
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const el = document.createElement('div');
+        el.className = 'cell';
+        el.dataset.idx = cells.length;
+        grid.appendChild(el);
+        cells.push({ el, on: false });
+      }
+    }
+
+    document.getElementById('info-screen').textContent =
+      `${window.innerWidth}×${window.innerHeight}`;
+    document.getElementById('info-grid').textContent = `${cols}×${rows}`;
+    updateScore();
+    attachEvents();
+  }
+
+  /* ─── TOGGLE CELL ─── */
+  function toggleCell(idx) {
+    const c = cells[idx];
+    c.on = !c.on;
+    c.el.className = 'cell' + (c.on ? ` on color-${currentColor}` : '');
+    updateScore();
+  }
+
+  function forceOn(idx) {
+    const c = cells[idx];
+    if (!c.on) {
+      c.on = true;
+      c.el.className = `cell on color-${currentColor}`;
+      updateScore();
+    }
+  }
+
+  /* ─── SCORE ─── */
+  function updateScore() {
+    const on  = cells.filter(c => c.on).length;
+    const off = cells.length - on;
+    document.getElementById('score-badge').textContent = `${on} / ${cells.length}`;
+    document.getElementById('info-on').textContent  = on;
+    document.getElementById('info-off').textContent = off;
+    document.getElementById('progress-bar').style.width = (on / cells.length * 100) + '%';
+
+    const res = document.getElementById('result');
+    if (on === cells.length) {
+      res.className = 'show good';
+      document.getElementById('result-title').textContent = '✅ Ekran mukammal!';
+      document.getElementById('result-desc').textContent =
+        `Barcha ${cells.length} ta piksel ishlaydi.`;
+    } else if (off === cells.length) {
+      res.className = '';
+    } else {
+      res.className = '';
+    }
+  }
+
+  /* ─── POINTER EVENTS (touch + mouse) ─── */
+  function cellFromPoint(x, y) {
+    const el = document.elementFromPoint(x, y);
+    if (el && el.classList.contains('cell')) return +el.dataset.idx;
+    return null;
+  }
+
+  function attachEvents() {
+    const grid = document.getElementById('pixel-grid');
+
+    grid.addEventListener('pointerdown', e => {
+      isPointerDown = true;
+      grid.setPointerCapture(e.pointerId);
+      const idx = cellFromPoint(e.clientX, e.clientY);
+      if (idx !== null) toggleCell(idx);
+    });
+
+    grid.addEventListener('pointermove', e => {
+      if (!isPointerDown) return;
+      const idx = cellFromPoint(e.clientX, e.clientY);
+      if (idx !== null) forceOn(idx);
+    });
+
+    grid.addEventListener('pointerup',    () => { isPointerDown = false; });
+    grid.addEventListener('pointercancel',() => { isPointerDown = false; });
+  }
+
+  /* ─── COLOR BUTTONS ─── */
+  function setColor(c) {
+    currentColor = c;
+    COLORS.forEach(x => {
+      document.getElementById('btn-' + x)?.classList.toggle('active', x === c);
+    });
+  }
+
+  /* ─── RESET ─── */
+  function resetAll() {
+    cells.forEach(c => { c.on = false; c.el.className = 'cell'; });
+    document.getElementById('result').className = '';
+    updateScore();
+  }
+
+  function toggleAllOn() {
+    const allOn = cells.every(c => c.on);
+    cells.forEach(c => {
+      c.on = !allOn;
+      c.el.className = 'cell' + (c.on ? ` on color-${currentColor}` : '');
+    });
+    updateScore();
+  }
+
+  /* ─── SOLID FULLSCREEN ─── */
+  function openSolid() {
+    solidIdx = 0;
+    const el = document.getElementById('solid-test');
+    el.classList.add('show');
+    el.style.background = SOLID_COLORS[solidIdx];
+  }
+
+  document.getElementById('solid-test').addEventListener('click', () => {
+    solidIdx = (solidIdx + 1) % SOLID_COLORS.length;
+    document.getElementById('solid-test').style.background = SOLID_COLORS[solidIdx];
+  });
+
+  document.getElementById('solid-test').addEventListener('contextmenu', e => {
+    e.preventDefault();
+    document.getElementById('solid-test').classList.remove('show');
+  });
+
+  // long press to exit solid
+  document.getElementById('solid-test').addEventListener('pointerdown', () => {
+    solidTimer = setTimeout(() => {
+      document.getElementById('solid-test').classList.remove('show');
+    }, 800);
+  });
+  document.getElementById('solid-test').addEventListener('pointerup', () => {
+    clearTimeout(solidTimer);
+  });
+
+  /* ─── INIT ─── */
+  buildGrid();
+  window.addEventListener('resize', buildGrid);
+</script>
+</body>
+</html>
