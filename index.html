@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="theme-color" content="#000000" />
   <title>Ekran Tester | Pixel Checker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a0f;
+      --bg: #000;
       --accent: #2563eb;
       --accent2: #38bdf8;
       --text: #e2e8f0;
       --dim: #475569;
-      --card: #111827;
+      --card: #0f172a;
       --border: #1e293b;
     }
 
@@ -32,134 +32,19 @@
       font-family: 'Rajdhani', sans-serif;
       height: 100dvh;
       width: 100vw;
-      display: flex;
-      flex-direction: column;
       overscroll-behavior: none;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
     }
 
-    /* ── HEADER ── */
-    header {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(10,10,15,.95);
-      backdrop-filter: blur(8px);
-      flex-shrink: 0;
-    }
-    header h1 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      background: linear-gradient(120deg, var(--accent2), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-    }
-    .header-right {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    #score-badge {
-      font-family: 'Space Mono', monospace;
-      font-size: .7rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 99px;
-      padding: 4px 10px;
-      color: var(--accent2);
-    }
-    .icon-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--accent2);
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ── CONTROLS ── */
-    .controls {
-      display: flex;
-      gap: 6px;
-      padding: 8px 12px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .controls::-webkit-scrollbar { display: none; }
-    .ctrl-btn {
-      flex-shrink: 0;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: .85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, border-color .2s, transform .1s;
-      letter-spacing: .03em;
-      white-space: nowrap;
-    }
-    .ctrl-btn:active { transform: scale(.95); }
-    .ctrl-btn.active {
-      background: var(--accent);
-      border-color: var(--accent2);
-      color: #fff;
-    }
-    .ctrl-btn.danger { border-color: #ef4444; color: #ef4444; }
-    .ctrl-btn.danger:active { background: #ef4444; color: #fff; }
-    .ctrl-btn.success { border-color: #22c55e; color: #22c55e; }
-    .ctrl-btn.success:active { background: #22c55e; color: #fff; }
-
-    /* ── INFO BAR ── */
-    .info-bar {
-      padding: 6px 12px;
-      font-family: 'Space Mono', monospace;
-      font-size: .62rem;
-      color: var(--dim);
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .info-bar span { color: var(--accent2); }
-
-    /* ── MAIN GRID ── */
-    main {
-      flex: 1;
-      min-height: 0;
-      padding: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      overflow: hidden;
-    }
-
-    /* ── PIXEL GRID ── */
+    /* ── PIXEL GRID — FULLSCREEN ── */
     #pixel-grid {
       display: grid;
-      gap: 3px;
+      gap: 2px;
       touch-action: none;
       user-select: none;
-      flex: 1;
-      width: 100%;
-      min-height: 0;
+      width: 100vw;
+      height: 100dvh;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      background: var(--bg);
     }
 
     .cell {
@@ -178,92 +63,233 @@
       position: absolute;
       inset: 0;
       border-radius: 4px;
-      background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 60%);
+      background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 60%);
       pointer-events: none;
     }
     .cell.on {
       background: var(--accent);
       border-color: var(--accent2);
-      box-shadow: 0 0 8px rgba(37,99,235,.5);
-      transform: scale(.93);
+      box-shadow: 0 0 6px rgba(37,99,235,.5);
+      transform: scale(.95);
     }
-    .cell.on.color-red    { background: #ef4444; border-color: #fca5a5; box-shadow: 0 0 8px rgba(239,68,68,.5); }
-    .cell.on.color-green  { background: #22c55e; border-color: #86efac; box-shadow: 0 0 8px rgba(34,197,94,.5); }
-    .cell.on.color-yellow { background: #eab308; border-color: #fde047; box-shadow: 0 0 8px rgba(234,179,8,.5); }
-    .cell.on.color-white  { background: #f8fafc; border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,.4); }
+    .cell.on.color-red    { background: #ef4444; border-color: #fca5a5; box-shadow: 0 0 6px rgba(239,68,68,.5); }
+    .cell.on.color-green  { background: #22c55e; border-color: #86efac; box-shadow: 0 0 6px rgba(34,197,94,.5); }
+    .cell.on.color-yellow { background: #eab308; border-color: #fde047; box-shadow: 0 0 6px rgba(234,179,8,.5); }
+    .cell.on.color-white  { background: #f8fafc; border-color: #fff; box-shadow: 0 0 6px rgba(255,255,255,.4); }
 
-    /* ── PROGRESS BAR ── */
-    .progress-wrap {
-      background: var(--card);
-      border-radius: 99px;
-      height: 5px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
+    /* ── FLOATING MENU BUTTON ── */
+    #menu-toggle {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0) + 10px);
+      left: calc(env(safe-area-inset-left, 0) + 10px);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.65);
+      border: 1px solid rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 1.05rem;
+      cursor: pointer;
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      transition: transform .15s, background .2s;
     }
-    #progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    #menu-toggle:active { transform: scale(.92); }
+
+    /* ── FLOATING SCORE BADGE ── */
+    #score-badge {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0) + 10px);
+      right: calc(env(safe-area-inset-right, 0) + 10px);
+      font-family: 'Space Mono', monospace;
+      font-size: .68rem;
+      background: rgba(0,0,0,.65);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(8px);
       border-radius: 99px;
-      transition: width .3s;
+      padding: 5px 11px;
+      color: var(--accent2);
+      z-index: 120;
+      pointer-events: none;
+    }
+
+    /* ── LEFT SIDE PANEL ── */
+    #panel-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 180;
+      backdrop-filter: blur(2px);
+    }
+    #panel-overlay.show { display: block; animation: fadeIn .2s ease; }
+
+    #side-panel {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 78%;
+      max-width: 320px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      z-index: 190;
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      padding: 20px 18px;
+      padding-top: calc(env(safe-area-inset-top, 0) + 20px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0) + 20px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    #side-panel.show { transform: translateX(0); }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-header h1 {
+      font-size: 1.1rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: linear-gradient(120deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .panel-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .section-title {
+      font-size: .65rem;
+      letter-spacing: .15em;
+      color: var(--dim);
+      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 8px;
+    }
+
+    .color-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .color-btn {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: transform .1s, border-color .15s;
+    }
+    .color-btn:active { transform: scale(.92); }
+    .color-btn.active { border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(56,189,248,.25); }
+
+    .action-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .action-btn {
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: transform .1s, border-color .15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .action-btn:active { transform: scale(.97); }
+    .action-btn.success { color: #22c55e; border-color: #22c55e44; }
+    .action-btn.danger  { color: #ef4444; border-color: #ef444444; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+    }
+    .info-card {
+      padding: 8px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--dim);
+    }
+    .info-card b {
+      color: var(--accent2);
+      font-weight: normal;
+      display: block;
+      margin-top: 2px;
+      font-size: .85rem;
+    }
+
+    .panel-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-family: 'Space Mono', monospace;
+      font-size: .62rem;
+      color: var(--dim);
+      text-align: center;
     }
 
     /* ── RESULT TOAST ── */
     #result {
       display: none;
       position: fixed;
-      bottom: 20px;
+      bottom: calc(env(safe-area-inset-bottom, 0) + 16px);
       left: 50%;
       transform: translateX(-50%);
-      padding: 12px 20px;
-      background: var(--card);
-      border-radius: 12px;
-      border: 1px solid var(--border);
+      padding: 10px 18px;
+      background: rgba(0,0,0,.75);
+      border-radius: 99px;
+      border: 1px solid rgba(34,197,94,.5);
       z-index: 150;
-      text-align: center;
+      backdrop-filter: blur(8px);
       box-shadow: 0 8px 24px rgba(0,0,0,.5);
+      white-space: nowrap;
+      color: #22c55e;
+      font-size: .9rem;
+      font-weight: 600;
     }
     #result.show { display: block; animation: fadeUp .4s ease; }
-    #result h2 { font-size: 1.1rem; margin-bottom: 4px; }
-    #result p  { font-size: .75rem; color: var(--dim); font-family: 'Space Mono', monospace; }
-    #result.good h2 { color: #22c55e; }
-    #result.bad  h2 { color: #ef4444; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translate(-50%, 12px); }
       to   { opacity: 1; transform: translate(-50%, 0); }
     }
-
-    /* ── FULLSCREEN MODE ── */
-    body.fullscreen header,
-    body.fullscreen .controls,
-    body.fullscreen .info-bar,
-    body.fullscreen .progress-wrap {
-      display: none;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
-    body.fullscreen main { padding: 0; gap: 0; }
-    body.fullscreen #pixel-grid { gap: 1px; }
-    body.fullscreen .cell { border-radius: 0; }
-    #fullscreen-exit {
-      display: none;
-      position: fixed;
-      top: env(safe-area-inset-top, 0);
-      right: env(safe-area-inset-right, 0);
-      margin: 8px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(0,0,0,.5);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.2);
-      font-size: 1rem;
-      cursor: pointer;
-      z-index: 250;
-      align-items: center;
-      justify-content: center;
-    }
-    body.fullscreen #fullscreen-exit { display: flex; }
 
     /* ── SOLID COLOR TEST ── */
     #solid-test {
@@ -330,65 +356,65 @@
       border-radius: 99px;
     }
 
-    /* ── RESPONSIVE TWEAKS ── */
-    /* Very small phones (≤360px) */
+    /* ── RESPONSIVE ── */
     @media (max-width: 360px) {
-      header h1 { font-size: 1rem; }
-      #score-badge { font-size: .65rem; padding: 3px 8px; }
-      .ctrl-btn { padding: 5px 10px; font-size: .78rem; }
-      .info-bar { font-size: .58rem; gap: 8px; padding: 5px 10px; }
-      header { padding: 8px 10px; }
-    }
-    /* Landscape phones — compact header/controls */
-    @media (orientation: landscape) and (max-height: 480px) {
-      header { padding: 6px 12px; }
-      header h1 { font-size: 1rem; }
-      .controls { padding: 5px 10px; }
-      .ctrl-btn { padding: 5px 10px; font-size: .8rem; }
-      .info-bar { display: none; }
-      main { padding: 4px; gap: 4px; }
+      #menu-toggle { width: 34px; height: 34px; font-size: 1rem; }
+      #score-badge { font-size: .62rem; padding: 4px 9px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>📱 Ekran Tester</h1>
-  <div class="header-right">
-    <div id="score-badge">0 / 0</div>
-    <button class="icon-btn" onclick="toggleFullscreen()" title="To'liq ekran">⛶</button>
+<!-- FULLSCREEN GRID -->
+<div id="pixel-grid"></div>
+
+<!-- FLOATING CONTROLS -->
+<button id="menu-toggle" onclick="openPanel()" title="Menyu">☰</button>
+<div id="score-badge">0 / 0</div>
+
+<!-- LEFT SIDE PANEL -->
+<div id="panel-overlay" onclick="closePanel()"></div>
+<aside id="side-panel">
+  <div class="panel-header">
+    <h1>📱 Ekran Tester</h1>
+    <button class="panel-close" onclick="closePanel()">✕</button>
   </div>
-</header>
 
-<div class="controls">
-  <button class="ctrl-btn active" id="btn-blue"   onclick="setColor('blue')">🔵 Ko'k</button>
-  <button class="ctrl-btn"        id="btn-red"    onclick="setColor('red')">🔴 Qizil</button>
-  <button class="ctrl-btn"        id="btn-green"  onclick="setColor('green')">🟢 Yashil</button>
-  <button class="ctrl-btn"        id="btn-yellow" onclick="setColor('yellow')">🟡 Sariq</button>
-  <button class="ctrl-btn"        id="btn-white"  onclick="setColor('white')">⚪ Oq</button>
-  <button class="ctrl-btn success"                onclick="toggleAllOn()">✅ Hammasini yoq</button>
-  <button class="ctrl-btn danger"                 onclick="resetAll()">♻️ Tozala</button>
-  <button class="ctrl-btn"                        onclick="openSolid()">🖥️ Solid</button>
-</div>
+  <div>
+    <div class="section-title">Rang tanlash</div>
+    <div class="color-row">
+      <button class="color-btn active" id="btn-blue"   onclick="setColor('blue')">🔵</button>
+      <button class="color-btn"        id="btn-red"    onclick="setColor('red')">🔴</button>
+      <button class="color-btn"        id="btn-green"  onclick="setColor('green')">🟢</button>
+      <button class="color-btn"        id="btn-yellow" onclick="setColor('yellow')">🟡</button>
+      <button class="color-btn"        id="btn-white"  onclick="setColor('white')">⚪</button>
+    </div>
+  </div>
 
-<div class="info-bar">
-  <div>Ekran: <span id="info-screen">—</span></div>
-  <div>Grid: <span id="info-grid">—</span></div>
-  <div>Yoniq: <span id="info-on">0</span></div>
-  <div>O'chiq: <span id="info-off">0</span></div>
-</div>
+  <div>
+    <div class="section-title">Amallar</div>
+    <div class="action-list">
+      <button class="action-btn success" onclick="toggleAllOn(); closePanel()">✅ Hammasini yoq</button>
+      <button class="action-btn danger"  onclick="resetAll(); closePanel()">♻️ Tozala</button>
+      <button class="action-btn"         onclick="openSolid(); closePanel()">🖥️ Solid rang testi</button>
+    </div>
+  </div>
 
-<main>
-  <div id="pixel-grid"></div>
-  <div class="progress-wrap"><div id="progress-bar"></div></div>
-</main>
+  <div>
+    <div class="section-title">Ma'lumot</div>
+    <div class="info-grid">
+      <div class="info-card">Ekran<b id="info-screen">—</b></div>
+      <div class="info-card">Grid<b id="info-grid">—</b></div>
+      <div class="info-card">Yoniq<b id="info-on">0</b></div>
+      <div class="info-card">O'chiq<b id="info-off">0</b></div>
+    </div>
+  </div>
 
-<div id="result">
-  <h2 id="result-title"></h2>
-  <p  id="result-desc"></p>
-</div>
+  <div class="panel-footer">📲 Vercel ready · Pixel Checker</div>
+</aside>
 
-<button id="fullscreen-exit" onclick="toggleFullscreen()">✕</button>
+<!-- RESULT TOAST -->
+<div id="result">✅ Ekran mukammal!</div>
 
 <!-- SOLID COLOR FULLSCREEN -->
 <div id="solid-test">
@@ -420,7 +446,6 @@
   /* ─── BUILD GRID ─── */
   function buildGrid() {
     const grid = document.getElementById('pixel-grid');
-    // Use the actual rendered container size so cells stretch perfectly to fill it
     const W = grid.clientWidth;
     const H = grid.clientHeight;
     if (W <= 0 || H <= 0) {
@@ -428,14 +453,11 @@
       return;
     }
 
-    const isFs = document.body.classList.contains('fullscreen');
-    const targetCell = isFs ? 36 : 44;
-    const gap = isFs ? 1 : 3;
+    const targetCell = 38;
+    const gap = 2;
+    cols = Math.max(8, Math.min(20, Math.round((W + gap) / (targetCell + gap))));
+    rows = Math.max(12, Math.min(40, Math.round((H + gap) / (targetCell + gap))));
 
-    cols = Math.max(6, Math.min(20, Math.round((W + gap) / (targetCell + gap))));
-    rows = Math.max(8, Math.min(40, Math.round((H + gap) / (targetCell + gap))));
-
-    // Use 1fr for both axes so cells fill the entire grid container
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     grid.style.gridTemplateRows    = `repeat(${rows}, 1fr)`;
     grid.innerHTML = '';
@@ -457,14 +479,13 @@
     attachEvents();
   }
 
-  /* ─── TOGGLE CELL ─── */
+  /* ─── CELL ACTIONS ─── */
   function toggleCell(idx) {
     const c = cells[idx];
     c.on = !c.on;
     c.el.className = 'cell' + (c.on ? ` on color-${currentColor}` : '');
     updateScore();
   }
-
   function forceOn(idx) {
     const c = cells[idx];
     if (!c.on) {
@@ -481,61 +502,50 @@
     document.getElementById('score-badge').textContent = `${on} / ${cells.length}`;
     document.getElementById('info-on').textContent  = on;
     document.getElementById('info-off').textContent = off;
-    document.getElementById('progress-bar').style.width = (on / cells.length * 100) + '%';
 
     const res = document.getElementById('result');
     if (on === cells.length && cells.length > 0) {
-      res.className = 'show good';
-      document.getElementById('result-title').textContent = '✅ Ekran mukammal!';
-      document.getElementById('result-desc').textContent =
-        `Barcha ${cells.length} ta piksel ishlaydi.`;
+      res.classList.add('show');
     } else {
-      res.className = '';
+      res.classList.remove('show');
     }
   }
 
-  /* ─── POINTER EVENTS (touch + mouse) ─── */
+  /* ─── POINTER ─── */
   function cellFromPoint(x, y) {
     const el = document.elementFromPoint(x, y);
     if (el && el.classList.contains('cell')) return +el.dataset.idx;
     return null;
   }
-
   function attachEvents() {
     const grid = document.getElementById('pixel-grid');
-
     grid.onpointerdown = e => {
       isPointerDown = true;
       try { grid.setPointerCapture(e.pointerId); } catch (_) {}
       const idx = cellFromPoint(e.clientX, e.clientY);
       if (idx !== null) toggleCell(idx);
     };
-
     grid.onpointermove = e => {
       if (!isPointerDown) return;
       const idx = cellFromPoint(e.clientX, e.clientY);
       if (idx !== null) forceOn(idx);
     };
-
     grid.onpointerup     = () => { isPointerDown = false; };
     grid.onpointercancel = () => { isPointerDown = false; };
   }
 
-  /* ─── COLOR BUTTONS ─── */
+  /* ─── COLOR / RESET ─── */
   function setColor(c) {
     currentColor = c;
     COLORS.forEach(x => {
       document.getElementById('btn-' + x)?.classList.toggle('active', x === c);
     });
   }
-
-  /* ─── RESET ─── */
   function resetAll() {
     cells.forEach(c => { c.on = false; c.el.className = 'cell'; });
-    document.getElementById('result').className = '';
+    document.getElementById('result').classList.remove('show');
     updateScore();
   }
-
   function toggleAllOn() {
     const allOn = cells.every(c => c.on);
     cells.forEach(c => {
@@ -545,40 +555,47 @@
     updateScore();
   }
 
-  /* ─── FULLSCREEN MODE ─── */
-  function toggleFullscreen() {
-    document.body.classList.toggle('fullscreen');
-    // Try real browser fullscreen as well
-    if (document.body.classList.contains('fullscreen')) {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      }
-    } else {
-      if (document.exitFullscreen && document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-    requestAnimationFrame(buildGrid);
+  /* ─── SIDE PANEL ─── */
+  function openPanel() {
+    document.getElementById('side-panel').classList.add('show');
+    document.getElementById('panel-overlay').classList.add('show');
+  }
+  function closePanel() {
+    document.getElementById('side-panel').classList.remove('show');
+    document.getElementById('panel-overlay').classList.remove('show');
   }
 
-  /* ─── SOLID FULLSCREEN ─── */
+  /* ─── EDGE SWIPE TO OPEN PANEL ─── */
+  let touchStartX = 0, touchStartY = 0;
+  document.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (!e.changedTouches[0]) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (touchStartX < 25 && dx > 60 && Math.abs(dy) < 60) {
+      openPanel();
+    }
+  }, { passive: true });
+
+  /* ─── SOLID ─── */
   function openSolid() {
     solidIdx = 0;
     const el = document.getElementById('solid-test');
     el.classList.add('show');
     el.style.background = SOLID_COLORS[solidIdx];
   }
-
   document.getElementById('solid-test').addEventListener('click', () => {
     solidIdx = (solidIdx + 1) % SOLID_COLORS.length;
     document.getElementById('solid-test').style.background = SOLID_COLORS[solidIdx];
   });
-
   document.getElementById('solid-test').addEventListener('contextmenu', e => {
     e.preventDefault();
     document.getElementById('solid-test').classList.remove('show');
   });
-
   document.getElementById('solid-test').addEventListener('pointerdown', () => {
     solidTimer = setTimeout(() => {
       document.getElementById('solid-test').classList.remove('show');
@@ -588,7 +605,7 @@
     clearTimeout(solidTimer);
   });
 
-  /* ─── DEVICE DETECTION (phone only) ─── */
+  /* ─── DEVICE DETECTION ─── */
   function isPhone() {
     const ua = navigator.userAgent || '';
     const w  = window.innerWidth;
@@ -596,21 +613,16 @@
     const minSide = Math.min(w, h);
     const maxSide = Math.max(w, h);
 
-    // Tablet markers in UA
     const isTabletUA = /iPad|Tablet|PlayBook|Silk|Kindle/i.test(ua) ||
                        (/Android/i.test(ua) && !/Mobile/i.test(ua));
     if (isTabletUA) return false;
 
-    // Desktop (no touch + large screen)
     const hasTouch = ('ontouchstart' in window) ||
                      (navigator.maxTouchPoints > 0);
     if (!hasTouch && minSide > 500) return false;
 
-    // Phone size threshold:
-    // Phones: shorter side ≤ 480px  AND  longer side ≤ 950px
     if (minSide > 480) return false;
     if (maxSide > 950) return false;
-
     return true;
   }
 
@@ -636,7 +648,6 @@
     setTimeout(checkDevice, 200);
   });
   window.addEventListener('load', checkDevice);
-  // first paint
   requestAnimationFrame(checkDevice);
 </script>
 </body>
